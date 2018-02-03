@@ -1,4 +1,6 @@
-﻿using SharpGL;
+﻿using aplimat_labs.Models;
+using aplimat_labs.Utilities;
+using SharpGL;
 using SharpGL.SceneGraph.Primitives;
 using SharpGL.SceneGraph.Quadrics;
 using System;
@@ -24,25 +26,69 @@ namespace aplimat_labs
         private const float LINE_SMOOTHNESS = 0.02f;
         private const float GRAPH_LIMIT = 15;
         private const int TOTAL_CIRCLE_ANGLE = 360;
+
+        private Vector3 a = new Vector3(15, 15, 0);
+        private Vector3 b = new Vector3(-2, 10, 0);
+
+        //private const int one = 0;
+        //private const int two = 1;
+        //private const int three = 2;
+        //private const int four = 3;
+        //private const int five = 4;
+        //private const int six = 5;
+        //private const int seven = 6;
+        //private const int eight = 7;
+
+        private Randomizer rng = new Randomizer(0, 7);
+        
         public MainWindow()
         {
             InitializeComponent();
             this.KeyDown += new KeyEventHandler(MainWindow_KeyDown);
+
+            //Vector3 c = a + b;
+            //Console.WriteLine("vector c values: x:" + c.x + "y:" + c.y + " z:" + c.z);
+
+            //V/*ector3 d = a - b;
+            //Console.WriteLine("vector d values: x:" + d.x + "y:" + d.y + " z:" + d.z);
+
         }
+        //private Randomizer rng = new Randomizer(-1, 1);
+        private List<CubeMesh> myCubes = new List<CubeMesh>();
+        private Randomizer myColor = new Randomizer (1, 255);
+        private Randomizer y = new Randomizer (-20, 20);
+        
 
         private void OpenGLControl_OpenGLDraw(object sender, SharpGL.SceneGraph.OpenGLEventArgs args)
         {
             OpenGL gl = args.OpenGL;
             gl.Clear(OpenGL.GL_COLOR_BUFFER_BIT | OpenGL.GL_DEPTH_BUFFER_BIT);
+
             gl.LoadIdentity();
 
-            gl.Translate(0.0f, 0.0f, -40.0f);
-            //gl.Color(0, 1, 0);
-            DrawCartesianPlane(gl); //draw cartesian plane with unit lines
-            DrawPoint(gl, 1, 1); //draw a point with coordinates (1, 1)
-            DrawLinearFunction(gl);
-            DrawQuadraticFunction(gl);
-            DrawCircle(gl);
+            gl.Translate(0.0f, 0.0f, -100.0f);
+
+            CubeMesh myCube = new CubeMesh();
+            myCube.Position = new Vector3(Gaussian.Generate(0, 15), y.GenerateDouble(), 0);
+            myCubes.Add(myCube);
+
+            foreach (var cube in myCubes)
+            {
+              
+                cube.Draw(gl);
+            }
+            
+
+            //myCube.Position += new Vector3(0, 0.1f, 0);
+
+
+
+            ////gl.Color(0, 1, 0);
+            //DrawCartesianPlane(gl); //draw cartesian plane with unit lines
+            //DrawPoint(gl, 1, 1); //draw a point with coordinates (1, 1)
+            //DrawLinearFunction(gl);
+            //DrawQuadraticFunction(gl);
+            //DrawCircle(gl);
         }
         
 
@@ -78,80 +124,80 @@ namespace aplimat_labs
             }
         }
 
-        private void DrawPoint(OpenGL gl, float x, float y)
-        {
-            gl.PointSize(5.0f);
-            gl.Begin(OpenGL.GL_POINTS);
-            gl.Vertex(x, y);
-            gl.End();
-        }
+        //private void DrawPoint(OpenGL gl, float x, float y)
+        //{
+        //    gl.PointSize(5.0f);
+        //    gl.Begin(OpenGL.GL_POINTS);
+        //    gl.Vertex(x, y);
+        //    gl.End();
+        //}
 
-        private void DrawLinearFunction(OpenGL gl)
-        {
-            /*
-             * f(x) = x + 2;
-             * Let x be 4, then y = 6 (4, 6)
-             * Let x be -5, then y = -3 (-5, -3)
-             * */
-            gl.PointSize(2.0f);
-            gl.Begin(OpenGL.GL_POINTS);
-            for (float x = -(GRAPH_LIMIT - 5); x <= (GRAPH_LIMIT - 5); x+=LINE_SMOOTHNESS)
-            {
-                gl.Vertex(x, x + 2);
-            }
-            gl.End();
+        //private void DrawLinearFunction(OpenGL gl)
+        //{
+        //    /*
+        //     * f(x) = x + 2;
+        //     * Let x be 4, then y = 6 (4, 6)
+        //     * Let x be -5, then y = -3 (-5, -3)
+        //     * */
+        //    gl.PointSize(2.0f);
+        //    gl.Begin(OpenGL.GL_POINTS);
+        //    for (float x = -(GRAPH_LIMIT - 5); x <= (GRAPH_LIMIT - 5); x+=LINE_SMOOTHNESS)
+        //    {
+        //        gl.Vertex(x, x + 2);
+        //    }
+        //    gl.End();
 
-            DrawText(gl, "f(x) = x + 2", 500, 400);
+        //    DrawText(gl, "f(x) = x + 2", 500, 400);
 
-        }
+        //}
 
 
-        private void DrawQuadraticFunction(OpenGL gl)
-        {
-            /*
-             * f(x) = x^2 + 2x - 5;
-             * Let x be 2, then y = 3
-             * Let x be -1, then y = -6
-             */
+        //private void DrawQuadraticFunction(OpenGL gl)
+        //{
+        //    /*
+        //     * f(x) = x^2 + 2x - 5;
+        //     * Let x be 2, then y = 3
+        //     * Let x be -1, then y = -6
+        //     */
 
-            //gl.PointSize(1.0f);
-            //gl.Begin(OpenGL.GL_POINTS);
-            //for (float x = -(GRAPH_LIMIT - 5); x <= (GRAPH_LIMIT - 5); x += LINE_SMOOTHNESS)
-            //{
-            //    gl.Vertex(x, Math.Pow(x, 2) + (2 * x) - 5);
-            //}
-            //gl.End();
+        //    gl.PointSize(1.0f);
+        //    gl.Begin(OpenGL.GL_POINTS);
+        //    for (float x = -(GRAPH_LIMIT - 5); x <= (GRAPH_LIMIT - 5); x += LINE_SMOOTHNESS)
+        //    {
+        //        gl.Vertex(x, Math.Pow(x, 2) + (2 * x) - 5);
+        //    }
+        //    gl.End();
 
-            /*
-             * f(x) = x^2
-             * 
-             */
-            gl.PointSize(2.0f);
-            gl.Begin(OpenGL.GL_POINTS);
-            for (float x = -(GRAPH_LIMIT - 5); x <= (GRAPH_LIMIT - 5); x += LINE_SMOOTHNESS)
-            {
-                gl.Vertex(x, Math.Pow(x, 2));
-            }
-            gl.End();
+        //    /*
+        //     * f(x) = x^2
+        //     * 
+        //     */
+        //    gl.PointSize(2.0f);
+        //    gl.Begin(OpenGL.GL_POINTS);
+        //    for (float x = -(GRAPH_LIMIT - 5); x <= (GRAPH_LIMIT - 5); x += LINE_SMOOTHNESS)
+        //    {
+        //        gl.Vertex(x, Math.Pow(x, 2));
+        //    }
+        //    gl.End();
 
-            DrawText(gl, "f(x) = x ^ 2", 360, 380);
+        //    DrawText(gl, "f(x) = x ^ 2", 360, 380);
 
-        }
+        //}
 
-        private void DrawCircle(OpenGL gl)
-        {
-            float radius = 3.0f;
+        //private void DrawCircle(OpenGL gl)
+        //{
+        //    float radius = 3.0f;
 
-            gl.PointSize(2.0f);
-            gl.Begin(OpenGL.GL_POINTS);
-            for (int i = 0; i <= TOTAL_CIRCLE_ANGLE; i++)
-            {
-                gl.Vertex(Math.Cos(i) * radius, Math.Sin(i) * radius);
-            }
-            gl.End();
+        //    gl.PointSize(2.0f);
+        //    gl.Begin(OpenGL.GL_POINTS);
+        //    for (int i = 0; i <= TOTAL_CIRCLE_ANGLE; i++)
+        //    {
+        //        gl.Vertex(Math.Cos(i) * radius, Math.Sin(i) * radius);
+        //    }
+        //    gl.End();
 
-            DrawText(gl, "(cos(x), sin(x))", 350, 200);
-        }
+        //    DrawText(gl, "(cos(x), sin(x))", 350, 200);
+        //}
 
         private void MainWindow_KeyDown(object sender, KeyEventArgs e)
         {
@@ -176,7 +222,7 @@ namespace aplimat_labs
 
             float[] lmodel_ambient = new float[] { 0.2f, 0.2f, 0.2f, 1.0f };
             gl.LightModel(OpenGL.GL_LIGHT_MODEL_AMBIENT, lmodel_ambient);
-
+            gl.Color(myColor.GenerateDouble(), myColor.GenerateDouble(), myColor.GenerateDouble());
             gl.LightModel(OpenGL.GL_LIGHT_MODEL_AMBIENT, global_ambient);
             gl.Light(OpenGL.GL_LIGHT0, OpenGL.GL_POSITION, light0pos);
             gl.Light(OpenGL.GL_LIGHT0, OpenGL.GL_AMBIENT, light0ambient);
