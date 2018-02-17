@@ -8,10 +8,8 @@ using System.Threading.Tasks;
 
 namespace aplimat_labs.Models
 {
-    class CubeMesh
+    public class CubeMesh : Movable
     {
-        public Vector3 Position;
-
         public CubeMesh()
         {
             this.Position = new Vector3();
@@ -71,6 +69,14 @@ namespace aplimat_labs.Models
             gl.Color(0, 0, 0);
             gl.End();
 
+            ApplyVelocity();
+
+        }
+
+        private void ApplyVelocity()
+        {
+            this.Position += Velocity;
+            //this.Position -= Velocity;
         }
     }
 }
